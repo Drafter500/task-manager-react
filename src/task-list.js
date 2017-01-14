@@ -86,7 +86,9 @@ export default class TaskList extends React.Component {
     const tasks = this._getSortedTasks(),
       isEditing = this.state.editing;
     
-    return <div><ul className="task-list">{ 
+    return <div>
+      <h1>Tasks</h1>
+      <ul className="task-list">{ 
         tasks.map(task => {
           return <li key={task.id && task.id.toString()}>
             <label>
@@ -97,7 +99,7 @@ export default class TaskList extends React.Component {
                 <span>{task.title}</span>
               }
             </label>&nbsp;
-            <button type="button" onClick={this._handleTaskDelete.bind(this, task.id)}>Delete</button> 
+            <button className='delete-button' type="button" onClick={this._handleTaskDelete.bind(this, task.id)}>Delete</button> 
           </li>})
         }
         </ul>

@@ -1,7 +1,32 @@
-ul.task-list li {
-    list-style-type: none;
+body {
+    color: #005;
+}
+
+ul.task-list {
+    padding: 0;
+    width: 400px;
+}
+
+ul.task-list li {   
+    list-style-type: none;  
+    position: relative;
+    padding: 3px 0px;  
+}
+
+ul.task-list li:nth-child(odd) {   
+    background-color: #ddf;
+}
+
+ul.task-list li:nth-child(even) {   
+    background-color: #f0f0ff;
 }
 
 .task-list input:checked+span {
     text-decoration: line-through;
+    color: #aaa;
+}
+
+.delete-button {
+    position: absolute;
+    right: 3px;
 }
