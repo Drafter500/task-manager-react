@@ -76,30 +76,67 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var App = function (_React$Component) {
-	  (0, _inherits3.default)(App, _React$Component);
+	var TaskList = function (_React$Component) {
+	  (0, _inherits3.default)(TaskList, _React$Component);
 
-	  function App() {
-	    (0, _classCallCheck3.default)(this, App);
-	    return (0, _possibleConstructorReturn3.default)(this, (App.__proto__ || (0, _getPrototypeOf2.default)(App)).apply(this, arguments));
+	  function TaskList(props) {
+	    (0, _classCallCheck3.default)(this, TaskList);
+
+	    var _this = (0, _possibleConstructorReturn3.default)(this, (TaskList.__proto__ || (0, _getPrototypeOf2.default)(TaskList)).call(this, props));
+
+	    _this.state = {
+	      tasks: [{ title: "Clean the room", done: true }, { title: "Clean the code", done: false }]
+	    };
+	    return _this;
 	  }
 
-	  (0, _createClass3.default)(App, [{
+	  (0, _createClass3.default)(TaskList, [{
+	    key: '_handleTaskAdd',
+	    value: function _handleTaskAdd(event) {
+	      var newTaskTitle = this._todoTitle.value;
+	      var newTaskList = this.state.tasks.slice();
+	      newTaskList.push({ title: newTaskTitle, done: false });
+	      this.setState({ tasks: newTaskList });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+
+	      var tasks = this.state.tasks;
+
+
 	      return _react2.default.createElement(
-	        'h1',
+	        'div',
 	        null,
-	        'Task Manager'
+	        _react2.default.createElement(
+	          'ul',
+	          null,
+	          tasks.map(function (task) {
+	            return _react2.default.createElement(
+	              'li',
+	              null,
+	              task.title
+	            );
+	          })
+	        ),
+	        _react2.default.createElement('input', { type: 'text', placeholder: 'What should I do?', ref: function ref(input) {
+	            return _this2._todoTitle = input;
+	          } }),
+	        _react2.default.createElement(
+	          'button',
+	          { type: 'button', onClick: this._handleTaskAdd.bind(this) },
+	          'Add'
+	        )
 	      );
 	    }
 	  }]);
-	  return App;
+	  return TaskList;
 	}(_react2.default.Component);
 
 	;
 
-	_reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('root'));
+	_reactDom2.default.render(_react2.default.createElement(TaskList, null), document.getElementById('root'));
 
 /***/ },
 /* 1 */
