@@ -9,7 +9,7 @@ export default class TaskList extends React.Component {
     this.state = {
       tasks: this._fetchTasks()
     };
-  };
+  }
 
   _fetchTasks() {
     let tasks;
@@ -30,7 +30,7 @@ export default class TaskList extends React.Component {
   }
 
   _saveTasks() {
-      console.log('saving: ', JSON.stringify(this.state.tasks));
+      //console.log(JSON.stringify(this.state.tasks));
       localStorage[STORAGE_KEY] = JSON.stringify(this.state.tasks);
   }
 
@@ -39,14 +39,21 @@ export default class TaskList extends React.Component {
       newTaskList = this.state.tasks.slice();
     newTaskList.push({id: this._generateNewTaskId(), title: newTaskTitle, done: false});    
     this.setState({tasks : newTaskList}, () => this._saveTasks());
-  };
+  }
 
-  _handleTaskToggle(id, event) {
+  _handleTaskDelete(id) {
+    let tasks = this.state.tasks.slice(),
+      taskIndex = tasks.findIndex(task => task.id === id);
+    tasks.splice(taskIndex, 1);
+    console.log(tasks);
+    this.setState({tasks}, () => this._saveTasks());    
+  }
+
+  _handleTaskToggle(id) {
     let tasks = this.state.tasks.slice(),
       task = tasks.find(task => task.id === id);
     task.done = !task.done;
-    this.setState({tasks});
-    this._saveTasks();
+    this.setState({tasks}, () => this._saveTasks());  
   }
 
   render() {
@@ -58,7 +65,8 @@ export default class TaskList extends React.Component {
           <label>
            <input type="checkbox" checked={task.done} onChange={this._handleTaskToggle.bind(this, task.id)}/>
             {task.title}
-          </label>
+          </label>&nbsp;
+          <button type="button" onClick={this._handleTaskDelete.bind(this, task.Id)}>Delete</button> 
         </li>})
       }
     </ul>
