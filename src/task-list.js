@@ -13,8 +13,7 @@ export default class TaskList extends React.Component {
   }
 
   _fetchTasks() {
-    let tasks;
-    console.log('fetching: ', localStorage[STORAGE_KEY]);
+    let tasks;    
     if (localStorage[STORAGE_KEY]) {
 	  tasks = JSON.parse(localStorage[STORAGE_KEY]);
     }
@@ -27,7 +26,6 @@ export default class TaskList extends React.Component {
   }
 
    _saveTasks() {
-    //console.log(JSON.stringify(this.state.tasks));
     localStorage[STORAGE_KEY] = JSON.stringify(this.state.tasks);
   }
 
@@ -88,11 +86,11 @@ export default class TaskList extends React.Component {
       tasks.map(task => {
         return <li key={task.id && task.id.toString()}>
           <label>
-           <input type="checkbox" checked={task.done} onChange={this._handleTaskToggle.bind(this, task.id)}/>
+           <input type="checkbox" checked={task.done} onChange={this._handleTaskToggle.bind(this, task.id)}/>             
              { isEditing ?
                <input type='text' onChange={this._handleTaskEditing.bind(this, task.id)} value={task.title}/>                 
                :
-               task.title 
+               <span>{task.title}</span> 
              }
           </label>&nbsp;
           <button type="button" onClick={this._handleTaskDelete.bind(this, task.id)}>Delete</button> 

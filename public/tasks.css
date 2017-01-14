@@ -1,3 +1,7 @@
 ul.task-list li {
     list-style-type: none;
 }
+
+.task-list input:checked+span {
+    text-decoration: line-through;
+}
