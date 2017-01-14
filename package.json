@@ -4,6 +4,9 @@
   "description": "simple todo application",
   "main": "index.js",
   "scripts": {
+    "webpack-watch": "webpack -w",
+    "express-server": "node ./server",
+    "dev": "concurrent --kill-others \"npm run webpack-watch\" \"npm run express-server\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +18,25 @@
   "bugs": {
     "url": "https://github.com/Drafter500/task-manager-react/issues"
   },
-  "homepage": "https://github.com/Drafter500/task-manager-react#readme"
+  "homepage": "https://github.com/Drafter500/task-manager-react#readme",
+  "dependencies": {
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-class-properties": "^6.19.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.20.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "babel-register": "^6.18.0",
+    "babel-runtime": "^6.20.0",
+    "express": "^4.14.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "webpack": "^1.14.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.1.0",
+    "webpack-livereload-plugin": "^0.9.0"
+  }
 }
