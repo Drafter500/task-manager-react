@@ -25,7 +25,7 @@ export default class TaskList extends React.Component {
     return tasks;
   }
 
-   _saveTasks() {
+  _saveTasks() {
     localStorage[STORAGE_KEY] = JSON.stringify(this.state.tasks);
   }
 
@@ -41,10 +41,14 @@ export default class TaskList extends React.Component {
   }
 
   _handleTaskAdd() {
-    let newTaskTitle = this._taskTitle.value,
-      newTaskList = this.state.tasks.slice();
-    newTaskList.push({id: this._generateNewTaskId(), title: newTaskTitle, done: false});    
-    this.setState({tasks : newTaskList}, () => this._saveTasks());
+    const title = this._taskTitle.value;
+    if (!title) {
+        return;
+    }
+
+    let tasks = this.state.tasks.slice();
+    tasks.push({id: this._generateNewTaskId(), title, done: false});    
+    this.setState({ tasks }, () => this._saveTasks());
     this._taskTitle.value = '';
   }
 
@@ -83,26 +87,26 @@ export default class TaskList extends React.Component {
       isEditing = this.state.editing;
     
     return <div><ul className="task-list">{ 
-      tasks.map(task => {
-        return <li key={task.id && task.id.toString()}>
-          <label>
-           <input type="checkbox" checked={task.done} onChange={this._handleTaskToggle.bind(this, task.id)}/>             
-             { isEditing ?
-               <input type='text' onChange={this._handleTaskEditing.bind(this, task.id)} value={task.title}/>                 
-               :
-               <span>{task.title}</span> 
-             }
-          </label>&nbsp;
-          <button type="button" onClick={this._handleTaskDelete.bind(this, task.id)}>Delete</button> 
-        </li>})
-      }
-    </ul>
-    <input type='text' placeholder='What should I do?' ref={(input) => this._taskTitle = input}/> 
-    <button type="button" onClick={this._handleTaskAdd.bind(this)}>Add</button>
-    <br/><br/>
-    <button type="button" onClick={this._toggleTaskEditing.bind(this)}>
-      { isEditing ? 'Finish editing' : 'Edit tasks' }
-    </button>
+        tasks.map(task => {
+          return <li key={task.id && task.id.toString()}>
+            <label>
+              <input type="checkbox" checked={task.done} onChange={this._handleTaskToggle.bind(this, task.id)}/>             
+              { isEditing ?
+                <input type='text' onChange={this._handleTaskEditing.bind(this, task.id)} value={task.title}/>                 
+                :
+                <span>{task.title}</span>
+              }
+            </label>&nbsp;
+            <button type="button" onClick={this._handleTaskDelete.bind(this, task.id)}>Delete</button> 
+          </li>})
+        }
+        </ul>
+        <input type='text' placeholder='What should I do?' ref={(input) => this._taskTitle = input}/> 
+        <button type="button" onClick={this._handleTaskAdd.bind(this)}>Add</button>
+        <br/><br/>
+        <button type="button" onClick={this._toggleTaskEditing.bind(this)}>
+          { isEditing ? 'Finish editing' : 'Edit tasks' }
+        </button>
     </div>
-  };
+  }
 };
