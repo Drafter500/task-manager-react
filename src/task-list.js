@@ -1,26 +1,52 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+const STORAGE_KEY = "taskManagerTasks";
+
 export default class TaskList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [{id: 1, title: "Clean the room", done: true}, {id: 2, title: "Clean the code", done: false}]
+      tasks: this._fetchTasks()
     };
   };
 
+  _fetchTasks() {
+    let tasks;
+    console.log('fetching: ', localStorage[STORAGE_KEY]);
+    if (localStorage[STORAGE_KEY]) {
+	  tasks = JSON.parse(localStorage[STORAGE_KEY]);
+    }
+	else {
+	  tasks =
+		[{id: 1, title: "Clean the room", done: true}, 
+         {id: 2, title: "Clean the code", done: false}];
+	}
+    return tasks;
+  }
+
+  _generateNewTaskId() {
+      return Math.max(...this.state.tasks.map(t => t.id)) + 1;
+  }
+
+  _saveTasks() {
+      console.log('saving: ', JSON.stringify(this.state.tasks));
+      localStorage[STORAGE_KEY] = JSON.stringify(this.state.tasks);
+  }
+
   _handleTaskAdd() {
-    const newTaskTitle = this._taskTitle.value;
-    let newTaskList = this.state.tasks.slice();
-    newTaskList.push({title: newTaskTitle, done: false});    
-    this.setState({tasks : newTaskList}); 
+    let newTaskTitle = this._taskTitle.value,
+      newTaskList = this.state.tasks.slice();
+    newTaskList.push({id: this._generateNewTaskId(), title: newTaskTitle, done: false});    
+    this.setState({tasks : newTaskList}, () => this._saveTasks());
   };
 
   _handleTaskToggle(id, event) {
-    let tasks = this.state.tasks.slice();
-    let task = tasks.find(task => task.id === id);
+    let tasks = this.state.tasks.slice(),
+      task = tasks.find(task => task.id === id);
     task.done = !task.done;
     this.setState({tasks});
+    this._saveTasks();
   }
 
   render() {
@@ -28,9 +54,9 @@ export default class TaskList extends React.Component {
 
     return <div><ul className="task-list">{ 
       tasks.map(task => {
-        return <li key={task.id}>        
+        return <li key={task.id && task.id.toString()}>        
           <label>
-           <input type="checkbox" onChange={this._handleTaskToggle.bind(this, task.id)}/>
+           <input type="checkbox" checked={task.done} onChange={this._handleTaskToggle.bind(this, task.id)}/>
             {task.title}
           </label>
         </li>})
