@@ -7,7 +7,8 @@ export default class TaskList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: this._fetchTasks()
+      tasks: this._fetchTasks(),
+      editing: false
     };
   }
 
@@ -25,13 +26,20 @@ export default class TaskList extends React.Component {
     return tasks;
   }
 
-  _generateNewTaskId() {
-    return Math.max(...this.state.tasks.map(t => t.id)) + 1;
-  }
-
-  _saveTasks() {
+   _saveTasks() {
     //console.log(JSON.stringify(this.state.tasks));
     localStorage[STORAGE_KEY] = JSON.stringify(this.state.tasks);
+  }
+
+  _generateNewTaskId() {
+    return Math.max(...this.state.tasks.map(t => t.id)) + 1;
+  } 
+
+  _updateTask(id, property, newValue) {
+    let tasks = this.state.tasks.slice(),
+      task = tasks.find(task => task.id === id);
+    task[property] = newValue;
+    this.setState({tasks}, () => this._saveTasks()); 
   }
 
   _handleTaskAdd() {
@@ -49,11 +57,16 @@ export default class TaskList extends React.Component {
     this.setState({tasks}, () => this._saveTasks());    
   }
 
-  _handleTaskToggle(id) {   
-    let tasks = this.state.tasks.slice(),
-      task = tasks.find(task => task.id === id);
-    task.done = !task.done;
-    this.setState({tasks}, () => this._saveTasks());  
+  _handleTaskToggle(id, event) {   
+    this._updateTask(id, 'done', event.target.checked);
+  }
+
+  _handleTaskEditing(id, event) {
+    this._updateTask(id, 'title', event.target.value);
+  }
+
+  _toggleTaskEditing() {
+    this.setState({editing: !this.state.editing});
   }
 
   _getSortedTasks() {
@@ -68,21 +81,30 @@ export default class TaskList extends React.Component {
   }
 
   render() {
-    const tasks = this._getSortedTasks();    
-
+    const tasks = this._getSortedTasks(),
+      isEditing = this.state.editing;
+    
     return <div><ul className="task-list">{ 
       tasks.map(task => {
-        return <li key={task.id && task.id.toString()}>        
+        return <li key={task.id && task.id.toString()}>
           <label>
            <input type="checkbox" checked={task.done} onChange={this._handleTaskToggle.bind(this, task.id)}/>
-            {task.title}
+             { isEditing ?
+               <input type='text' onChange={this._handleTaskEditing.bind(this, task.id)} value={task.title}/>                 
+               :
+               task.title 
+             }
           </label>&nbsp;
           <button type="button" onClick={this._handleTaskDelete.bind(this, task.id)}>Delete</button> 
         </li>})
       }
     </ul>
     <input type='text' placeholder='What should I do?' ref={(input) => this._taskTitle = input}/> 
-    <button type="button" onClick={this._handleTaskAdd.bind(this)}>Add</button> 
+    <button type="button" onClick={this._handleTaskAdd.bind(this)}>Add</button>
+    <br/><br/>
+    <button type="button" onClick={this._toggleTaskEditing.bind(this)}>
+      { isEditing ? 'Finish editing' : 'Edit tasks' }
+    </button>
     </div>
   };
 };
