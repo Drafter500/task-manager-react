@@ -26,12 +26,12 @@ export default class TaskList extends React.Component {
   }
 
   _generateNewTaskId() {
-      return Math.max(...this.state.tasks.map(t => t.id)) + 1;
+    return Math.max(...this.state.tasks.map(t => t.id)) + 1;
   }
 
   _saveTasks() {
-      //console.log(JSON.stringify(this.state.tasks));
-      localStorage[STORAGE_KEY] = JSON.stringify(this.state.tasks);
+    //console.log(JSON.stringify(this.state.tasks));
+    localStorage[STORAGE_KEY] = JSON.stringify(this.state.tasks);
   }
 
   _handleTaskAdd() {
@@ -39,25 +39,36 @@ export default class TaskList extends React.Component {
       newTaskList = this.state.tasks.slice();
     newTaskList.push({id: this._generateNewTaskId(), title: newTaskTitle, done: false});    
     this.setState({tasks : newTaskList}, () => this._saveTasks());
+    this._taskTitle.value = '';
   }
 
-  _handleTaskDelete(id) {
+  _handleTaskDelete(id) {    
     let tasks = this.state.tasks.slice(),
       taskIndex = tasks.findIndex(task => task.id === id);
     tasks.splice(taskIndex, 1);
-    console.log(tasks);
     this.setState({tasks}, () => this._saveTasks());    
   }
 
-  _handleTaskToggle(id) {
+  _handleTaskToggle(id) {   
     let tasks = this.state.tasks.slice(),
       task = tasks.find(task => task.id === id);
     task.done = !task.done;
     this.setState({tasks}, () => this._saveTasks());  
   }
 
+  _getSortedTasks() {
+    let { tasks } = this.state;
+    return tasks.sort((a,b) => {
+        let aTitle = a.title.toLowerCase(),
+          bTitle = b.title.toLowerCase();
+        if (aTitle > bTitle) { return -1; }
+        if (aTitle < bTitle) { return 1; }
+        if (aTitle === bTitle) { return 0; }
+    });
+  }
+
   render() {
-    const { tasks } = this.state;    
+    const tasks = this._getSortedTasks();    
 
     return <div><ul className="task-list">{ 
       tasks.map(task => {
@@ -66,7 +77,7 @@ export default class TaskList extends React.Component {
            <input type="checkbox" checked={task.done} onChange={this._handleTaskToggle.bind(this, task.id)}/>
             {task.title}
           </label>&nbsp;
-          <button type="button" onClick={this._handleTaskDelete.bind(this, task.Id)}>Delete</button> 
+          <button type="button" onClick={this._handleTaskDelete.bind(this, task.id)}>Delete</button> 
         </li>})
       }
     </ul>
